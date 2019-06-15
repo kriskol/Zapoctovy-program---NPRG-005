@@ -8,6 +8,7 @@
 ## Fungovanie sudoku solver-a:
 
 Spôsob vypĺňania zadaného sudoku je nasledovný:
+
 1.Ak má sudoku vyplnené všetky polia, tak ho vráť a skonči. Inak pokračuj 2.
 
 2.Skús vyplniť všetky také polia v sudoku, ktoré ešte nemajú vyplnenú hodnotu a existuje práve jedna hodnota, ktorú je možné do daného poľa vložiť bez porušenia pravidiel vypĺňania sudoku. Ak sa vyplní aspoň jedno pole sudoku, tak na konci 2 opakuj 
