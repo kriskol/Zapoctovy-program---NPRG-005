@@ -4,7 +4,8 @@
 %Y and Z are such that (Y*N + Z) represents column of the given cell (starting from 0), where
 %Z < N and N*N is the length of a side of the sudoku.
 %cellOrderToCellPosition(+Order,-position(X,Y,Z),+N)
-cellOrderToCellPosition(Order, position(X,Y,Z), N) :- 	Temp is N*N,
+cellOrderToCellPosition(Order, position(X,Y,Z), N) :- 	
+		Temp is N*N,
 		X is div(Order, Temp),
 		Y is div(mod(Order, Temp), N),
 		Z is mod(mod(Order, Temp), N).
@@ -15,7 +16,8 @@ cellOrderToCellPosition(Order, position(X,Y,Z), N) :- 	Temp is N*N,
 %Y and Z are such that (Y*N + Z) represents column of the given cell (starting from 0), where
 %Z < N and N*N is the length of a side of the sudoku.
 %cellPositionToCellOrder(-Order, +position(X,Y,Z), +N)
-cellPositionToCellOrder(Order, position(X,Y,Z), N) :- 	Temp is N*N,
+cellPositionToCellOrder(Order, position(X,Y,Z), N) :- 	
+		Temp is N*N,
 		Order is Z + Y * N + X * Temp.
 
 %Takes the first N elements from the List and returns them.
@@ -60,7 +62,8 @@ buildListMToN(M, N, [M|List]) :- N >= M, MTemp is M + 1, buildListMToN(MTemp, N,
 %Where N is such that N*N is length of a side of the sudoku.
 %sudokuRowTransformation(+Row, -DividedRow, +N) 
 sudokuRowTransformation([], [], _) :- !.
-sudokuRowTransformation(Row, [FirstNElemnts|RowTransformed], N) :- take(N, Row, FirstNElemnts), 
+sudokuRowTransformation(Row, [FirstNElemnts|RowTransformed], N) :- 
+		take(N, Row, FirstNElemnts), 
 		drop(N, Row, ElementsExceptFirstN),
 		sudokuRowTransformation(ElementsExceptFirstN, RowTransformed, N).
 
@@ -69,7 +72,8 @@ sudokuRowTransformation(Row, [FirstNElemnts|RowTransformed], N) :- take(N, Row, 
 %Where N is such that N*N is the length of a side of the sudoku.
 %sudokuTransformation(+SudokuCells, -SudokuCellsTransformed, +N)
 sudokuTransformation([],[],_).
-sudokuTransformation([Row|SudokuCells], [RowTransformed|SudokuCellsTransformed], N) :-	sudokuRowTransformation(Row, RowTransformed, N),
+sudokuTransformation([Row|SudokuCells], [RowTransformed|SudokuCellsTransformed], N) :-	
+			sudokuRowTransformation(Row, RowTransformed, N),
 			sudokuTransformation(SudokuCells, SudokuCellsTransformed,N).
 
 %Counts the number of non-empty cells,i.e. cells that contain 0, in a partial row.
@@ -83,13 +87,15 @@ countFilledPartialRowCells([_|T],Count) :- countFilledPartialRowCells(T,CountTem
 %Counts the number of non-empty cells in a row of a sudoku.
 %countFilledRowCells(+Row, -Count)
 countFilledRowCells([],0).
-countFilledRowCells([H|T], Count) :- 	countFilledPartialRowCells(H, CountTemp1), countFilledRowCells(T, CountTemp2), 
+countFilledRowCells([H|T], Count) :-
+			countFilledPartialRowCells(H, CountTemp1), countFilledRowCells(T, CountTemp2), 
 			Count is CountTemp1 + CountTemp2.
 
 %Counts the number of non-empty cells in a sudoku.
 %countFilledSudokuCells(+SudokuCells, -Count)
 countFilledSudokuCells([], 0).
-countFilledSudokuCells([Row|SudokuCells], Count) :- 	countFilledRowCells(Row, CountTemp1), 
+countFilledSudokuCells([Row|SudokuCells], Count) :-
+			countFilledRowCells(Row, CountTemp1), 
 			countFilledSudokuCells(SudokuCells, CountTemp2), 
 			Count is CountTemp1 + CountTemp2.
 
@@ -97,14 +103,15 @@ countFilledSudokuCells([Row|SudokuCells], Count) :- 	countFilledRowCells(Row, Co
 %Value is occupied when there exist a cell containing given value in a given "scope", i.e. partial row, row,..., and it is not 0.
 %findAllOccupiedValuesPartialRow(+PartialRow, -OccupiedValues)
 findAllOccupiedValuesPartialRow([],[]).
-findAllOccupiedValuesPartialRow([H|T],[H|OccupiedValues]) :-	\+member(H, T), H \= 0, !, findAllOccupiedValuesPartialRow(T,OccupiedValues).
+findAllOccupiedValuesPartialRow([H|T],[H|OccupiedValues]) :- \+member(H, T), H \= 0, !, findAllOccupiedValuesPartialRow(T,OccupiedValues).
 findAllOccupiedValuesPartialRow([_|T],OccupiedValues) :- findAllOccupiedValuesPartialRow(T,OccupiedValues).
 
 %Finds all occupied values in a row of a sudoku and then returns them sorted (and without repetition).
 %Value is occupied when there exist a cell containing given value in a given "scope", i.e. partial row, row,..., and it is not 0.
 %findAllOccupiedValuesRowSorted(+Row, -OccupiedValuesRowSorted)
 findAllOccupiedValuesRowSorted([],[]).
-findAllOccupiedValuesRowSorted([PartialRow|Row], OccupiedValuesRowSortedFinal) :- findAllOccupiedValuesPartialRow(PartialRow, OccupiedValuesPartialRow),
+findAllOccupiedValuesRowSorted([PartialRow|Row], OccupiedValuesRowSortedFinal) :- 
+			findAllOccupiedValuesPartialRow(PartialRow, OccupiedValuesPartialRow),
 			sort(OccupiedValuesPartialRow, OccupiedValuesPartialRowSorted),
 			findAllOccupiedValuesRowSorted(Row, OccupiedValuesRowSorted),
 			unionSortedLists(OccupiedValuesPartialRowSorted, OccupiedValuesRowSorted, 
@@ -116,7 +123,8 @@ findAllOccupiedValuesRowSorted([PartialRow|Row], OccupiedValuesRowSortedFinal) :
 %X contains the number of row, i.e. which row from the top left corner of sudoku is the one we are looking for.
 %occupiedValuesRowSorted(+SudokuCells,+X,-OccupiedValuesRowSorted)
 occupiedValuesRowSorted([Row|_],0,OccupiedValuesRowSorted) :- findAllOccupiedValuesRowSorted(Row, OccupiedValuesRowSorted).
-occupiedValuesRowSorted([_|SudokuCells], X, OccupiedValuesRowSorted) :- X > 0, XTemp is X - 1,
+occupiedValuesRowSorted([_|SudokuCells], X, OccupiedValuesRowSorted) :- 
+			X > 0, XTemp is X - 1,
 			occupiedValuesRowSorted(SudokuCells, XTemp, OccupiedValuesRowSorted).
 
 %Finds whether in a given partial row on a given position, represented by Z, is non-zero value.
@@ -139,7 +147,8 @@ findOccupiedValueRow([_|Row], position(Y,Z), Value) :- Y > 0, YTemp is Y - 1, fi
 %Z represents position of a cell in a partial row in which we should look for a value for each processed row.
 %occupiedValuesColumnSorted(+SudokuCells, +position(Y,Z), -OccupiedValuesColumnSorted)
 occupiedValuesColumnSorted([], _, []).
-occupiedValuesColumnSorted([Row|SudokuCells], position(Y,Z), OccupiedValuesColumnSorted) :- findOccupiedValueRow(Row, position(Y,Z), Value),
+occupiedValuesColumnSorted([Row|SudokuCells], position(Y,Z), OccupiedValuesColumnSorted) :- 
+		findOccupiedValueRow(Row, position(Y,Z), Value),
 		occupiedValuesColumnSorted(SudokuCells, position(Y,Z), OccupiedValuesColumnSortedTemp),
 		unionSortedLists(OccupiedValuesColumnSortedTemp, Value, OccupiedValuesColumnSorted).		
 
@@ -154,13 +163,14 @@ findOccupiedValuesSquareRow([_|Row], Y, OccupiedValues) :- Y > 0, YTemp is Y - 1
 %M is the number of rows, from the beginning, that are part of the square in SudokuCells.
 %findAllOccupiedValuesSquareSorted(+SudokuCells,+Y,+M,-OccupiedValuesSquareSorted)
 findAllOccupiedValuesSquareSorted([Row|_], Y, 1, OccupiedValuesSorted) :- findOccupiedValuesSquareRow(Row, Y, OccupiedValuesTemp), sort(OccupiedValuesTemp, OccupiedValuesSorted).
-findAllOccupiedValuesSquareSorted([Row|SudokuCells],Y, M, OccupiedValuesSquareSorted) :- 	M > 1,
-			findOccupiedValuesSquareRow(Row, Y, OccupiedValuesSquareRow),
-			MTemp is M - 1,
-			findAllOccupiedValuesSquareSorted(SudokuCells, Y, MTemp, OccupiedValuesSquareSortedTemp),
-			sort(OccupiedValuesSquareRow, OccupiedValuesSquareRowSorted),
-			unionSortedLists(OccupiedValuesSquareRowSorted, 
-			OccupiedValuesSquareSortedTemp, OccupiedValuesSquareSorted).
+findAllOccupiedValuesSquareSorted([Row|SudokuCells],Y, M, OccupiedValuesSquareSorted) :- 
+		M > 1,
+		findOccupiedValuesSquareRow(Row, Y, OccupiedValuesSquareRow),
+		MTemp is M - 1,
+		findAllOccupiedValuesSquareSorted(SudokuCells, Y, MTemp, OccupiedValuesSquareSortedTemp),
+		sort(OccupiedValuesSquareRow, OccupiedValuesSquareRowSorted),
+		unionSortedLists(OccupiedValuesSquareRowSorted, 
+		OccupiedValuesSquareSortedTemp, OccupiedValuesSquareSorted).
 
 %Finds all occupied values of a given square in a sudoku and returns them sorted (and without repetition). Where
 %X is the number of consecutive rows that are not part of the given square followed by row that is contained in the square.
@@ -170,36 +180,40 @@ findAllOccupiedValuesSquareSorted([Row|SudokuCells],Y, M, OccupiedValuesSquareSo
 %the rest is handled by findAllOccupiedValuesSquareSorted(+SudokuCells,+Y,+M,-OccupiedValuesSquareSorted).
 %occupiedValuesSquareSorted(+SudokuCells, +position(X,Y), +N, -OccupiedValuesSquareSorted)
 occupiedValuesSquareSorted(SudokuCells, position(0,Y), N, OccupiedValuesSquareSorted) :- findAllOccupiedValuesSquareSorted(SudokuCells, Y, N, OccupiedValuesSquareSorted).
-occupiedValuesSquareSorted([_|SudokuCells], position(X,Y), N, OccupiedValuesSquareSorted) :- X > 0, XTemp is X - 1, 
-			occupiedValuesSquareSorted(SudokuCells, position(XTemp,Y), N, OccupiedValuesSquareSorted).
+occupiedValuesSquareSorted([_|SudokuCells], position(X,Y), N, OccupiedValuesSquareSorted) :- 
+		X > 0, XTemp is X - 1, 
+		occupiedValuesSquareSorted(SudokuCells, position(XTemp,Y), N, OccupiedValuesSquareSorted).
 
 %Finds all values that are occupied in a row, column and square determined by position(X,Y,Z), where
 %position(X,Y,Z) determines a cell in a sudoku. These values are then sorted and returned without repetition.
 %N is such that N*N is the length of a side of the sudoku.
 %occupiedValuesSorted(+SudokuCells, +position(X,Y,Z), +N, -OccupiedValuesSorted)
-occupiedValuesSorted(SudokuCells, position(X,Y,Z), N, OccupiedValuesSorted) :- 	occupiedValuesColumnSorted(SudokuCells, position(Y,Z), 
-			OccupiedValuesColumnSorted),
-			occupiedValuesRowSorted(SudokuCells, X, OccupiedValuesRowSorted),
-			XTemp is X - mod(X,N),
-			occupiedValuesSquareSorted(SudokuCells, position(XTemp,Y), N, OccupiedValuesSquareSorted),
-			unionSortedLists(OccupiedValuesColumnSorted,OccupiedValuesRowSorted, ListTempSorted),
-			unionSortedLists(ListTempSorted, OccupiedValuesSquareSorted, OccupiedValuesSorted).
+occupiedValuesSorted(SudokuCells, position(X,Y,Z), N, OccupiedValuesSorted) :- 	
+		occupiedValuesColumnSorted(SudokuCells, position(Y,Z), 
+		OccupiedValuesColumnSorted),
+		occupiedValuesRowSorted(SudokuCells, X, OccupiedValuesRowSorted),
+		XTemp is X - mod(X,N),
+		occupiedValuesSquareSorted(SudokuCells, position(XTemp,Y), N, OccupiedValuesSquareSorted),
+		unionSortedLists(OccupiedValuesColumnSorted,OccupiedValuesRowSorted, ListTempSorted),
+		unionSortedLists(ListTempSorted, OccupiedValuesSquareSorted, OccupiedValuesSorted).
 
 %Finds all values that can be inserted into a cell determined by the position(X,Y,Z) without violating any "sudoku" rules.
 %N is such that N*N is the length of a side of the sudoku.
 %possibleValues(+SudokuCells, +position(X,Y,Z), +N, -Values)
-possibleValues(SudokuCells, position(X,Y,Z), N, Values) :- occupiedValuesSorted(SudokuCells, position(X,Y,Z), N, OccupiedValuesSorted),
-			Temp is N*N,
-			buildList1ToN(Temp, List),
-			differenceSortedLists(List, OccupiedValuesSorted, Values).
+possibleValues(SudokuCells, position(X,Y,Z), N, Values) :- 
+		occupiedValuesSorted(SudokuCells, position(X,Y,Z), N, OccupiedValuesSorted),
+		Temp is N*N,
+		buildList1ToN(Temp, List),
+		differenceSortedLists(List, OccupiedValuesSorted, Values).
 
 %Finds all values that can be inserted into a cell determined by the position(X,Y,Z) without violating any "sudoku" rules.
 %N is such that N*N is the length of a side of the sudoku. If the number of Values that can be inserted into given cell is 0, then
 %this procedure fails.
 %findPossibilitiesForCell(+SudokuCells, +position(X,Y,Z), +N, -Values)
-findPossibilitiesForCell(SudokuCells, position(X,Y,Z), N, Values) :-	possibleValues(SudokuCells, position(X,Y,Z), N, Values), 
-			length(Values, NumberOfValues),
-			NumberOfValues > 0.
+findPossibilitiesForCell(SudokuCells, position(X,Y,Z), N, Values) :-	
+		possibleValues(SudokuCells, position(X,Y,Z), N, Values), 
+		length(Values, NumberOfValues),
+		NumberOfValues > 0.
 
 %Returns values depending on the length of the list called Values.
 %If the list is empty, then procedure fails.
@@ -263,11 +277,11 @@ fillDeterminedRowCells(SudokuCells,[PartialRow|Row], N, CurrentOrder, [FilledPar
 %fillDeterminedSudokuCells(+SudokuCells,+CellsIterated, +N, +CurrentOrder, -FilledCells, -CountFilledCells, -SudokuCellsAltered)
 fillDeterminedSudokuCells(SudokuCells,[],_, _, [],0,SudokuCells).
 fillDeterminedSudokuCells(SudokuCells,[Row|SudokuCellsRest], N, CurrentOrder, [FilledRow| FilledSudokuCells],CountFilledCells, SudokuCellsAltered) :-
-		fillDeterminedRowCells(SudokuCells, Row, N, CurrentOrder, FilledRow, CountFilledCellsRow, SudokuCellsAlteredTemp),
-		CurrentOrderTemp is CurrentOrder + N*N,
-		fillDeterminedSudokuCells(SudokuCellsAlteredTemp, SudokuCellsRest, N, CurrentOrderTemp, FilledSudokuCells, 
-		CountFilledSudokuCells,SudokuCellsAltered),
-		CountFilledCells is CountFilledCellsRow + CountFilledSudokuCells.
+	fillDeterminedRowCells(SudokuCells, Row, N, CurrentOrder, FilledRow, CountFilledCellsRow, SudokuCellsAlteredTemp),
+	CurrentOrderTemp is CurrentOrder + N*N,
+	fillDeterminedSudokuCells(SudokuCellsAlteredTemp, SudokuCellsRest, N, CurrentOrderTemp, FilledSudokuCells, 
+	CountFilledSudokuCells,SudokuCellsAltered),
+	CountFilledCells is CountFilledCellsRow + CountFilledSudokuCells.
 
 %Fills all zero cells which have uniquely determined value that they can have without violating "sudoku" rules with that value, in the whole sudoku.
 %N is such that N*N is the length of a side of the sudoku.
@@ -277,12 +291,12 @@ fillDeterminedSudokuCells(SudokuCells,[Row|SudokuCellsRest], N, CurrentOrder, [F
 %fillDeterminedCells(+SudokuCellsFilled, +CountFilledCells, +N, +CountFilledCellsPrevious, -SudokuCellsCellFilledFinal, -CountFilledCellsFinel)
 fillDeterminedCells(SudokuCellsFilledFinal, CountFilledCellsFinal, _, 0, SudokuCellsFilledFinal, CountFilledCellsFinal) :- !.
 fillDeterminedCells(SudokuCellsFilled, CountFilledCells, N, CountFilledCellsPrevious, SudokuCellsFilledFinal, CountFilledCellsFinal) :-
-		CountFilledCellsPrevious > 0,
-		fillDeterminedSudokuCells(SudokuCellsFilled, SudokuCellsFilled,
-		N, 0, SudokuCellsFilledLast, CountFilledCellsLast,_),
-		CountFilledCellsTemp is CountFilledCells + CountFilledCellsLast,
-		fillDeterminedCells(SudokuCellsFilledLast,CountFilledCellsTemp,N,
-		CountFilledCellsLast, SudokuCellsFilledFinal, CountFilledCellsFinal).
+	CountFilledCellsPrevious > 0,
+	fillDeterminedSudokuCells(SudokuCellsFilled, SudokuCellsFilled,
+	N, 0, SudokuCellsFilledLast, CountFilledCellsLast,_),
+	CountFilledCellsTemp is CountFilledCells + CountFilledCellsLast,
+	fillDeterminedCells(SudokuCellsFilledLast,CountFilledCellsTemp,N,
+	CountFilledCellsLast, SudokuCellsFilledFinal, CountFilledCellsFinal).
 
 %Fills all zero cells which have uniquely determined value that they can have without violating "sudoku" rules with that value, in the whole sudoku.
 %N is such that N*N is the length of a side of the sudoku.
@@ -305,18 +319,18 @@ lowerPossibilities(best(Order, NumberOfPossibilities), _, best(Order, NumberOfPo
 %findCellPartialRowSmallestPossibilities(+SudokuCells, +PartialRowcellsIterated, +CurrentOrder, +N, +CurrentBest, -Best) 
 findCellPartialRowSmallestPossibilities(_, [], _, _, Best, Best).
 findCellPartialRowSmallestPossibilities(SudokuCells, [0|T], CurrentOrder, N, CurrentBest, Best) :-
-		cellOrderToCellPosition(CurrentOrder, position(X,Y,Z), N),
-		findPossibilitiesForCell(SudokuCells, position(X,Y,Z), N, Values),
-		length(Values, NumberOfValues),
-		lowerPossibilities(CurrentBest, best(CurrentOrder, NumberOfValues), 
-		Better),
-		CurrentOrderTemp is CurrentOrder + 1,
-		findCellPartialRowSmallestPossibilities(SudokuCells, T, CurrentOrderTemp, 
-		N, Better, Best).
+	cellOrderToCellPosition(CurrentOrder, position(X,Y,Z), N),
+	findPossibilitiesForCell(SudokuCells, position(X,Y,Z), N, Values),
+	length(Values, NumberOfValues),
+	lowerPossibilities(CurrentBest, best(CurrentOrder, NumberOfValues), 
+	Better),
+	CurrentOrderTemp is CurrentOrder + 1,
+	findCellPartialRowSmallestPossibilities(SudokuCells, T, CurrentOrderTemp, 
+	N, Better, Best).
 findCellPartialRowSmallestPossibilities(SudokuCells, [X|T], CurrentOrder, N, CurrentBest,Best) :- 
-		X \= 0,
-		CurrentOrderTemp is CurrentOrder + 1,
-		findCellPartialRowSmallestPossibilities(SudokuCells,T,CurrentOrderTemp,N,CurrentBest,Best).
+	X \= 0,
+	CurrentOrderTemp is CurrentOrder + 1,
+	findCellPartialRowSmallestPossibilities(SudokuCells,T,CurrentOrderTemp,N,CurrentBest,Best).
 
 
 %Finds an order of a zero cell in a given row that has the lowest number of possible values that can be filled in that cell without violating "sudoku" rules.
@@ -328,11 +342,11 @@ findCellPartialRowSmallestPossibilities(SudokuCells, [X|T], CurrentOrder, N, Cur
 %findCellRowSmallestPossibilities(+SudokuCells, +RowCellsIterated, +CurrentOrder, +N, +CurrentBest, -Best)
 findCellRowSmallestPossibilities(_, [], __, _, Best, Best).
 findCellRowSmallestPossibilities(SudokuCells, [PartialRow|Row], CurrentOrder, N, CurrentBest, Best) :-
-		findCellPartialRowSmallestPossibilities(SudokuCells, PartialRow, CurrentOrder,
-		N, CurrentBest, Better),
-		CurrentOrderTemp is CurrentOrder + N,
-		findCellRowSmallestPossibilities(SudokuCells, Row, CurrentOrderTemp, N,
-		Better, Best). 
+	findCellPartialRowSmallestPossibilities(SudokuCells, PartialRow, CurrentOrder,
+	N, CurrentBest, Better),
+	CurrentOrderTemp is CurrentOrder + N,
+	findCellRowSmallestPossibilities(SudokuCells, Row, CurrentOrderTemp, N,
+	Better, Best). 
 
 %Finds an order of a zero cell in a given sudoku that has the lowest number of possible values that can be filled in that cell without violating "sudoku" rules.
 %But the number of possibilities of all zero cells has to be greater than 0,
@@ -343,11 +357,11 @@ findCellRowSmallestPossibilities(SudokuCells, [PartialRow|Row], CurrentOrder, N,
 %findCellSudokuSmallestPossibilities(+SudokuCells, +SudokuCellsIterated, +CurrentOrder, +N, +CurrentBest, -Best)
 findCellSudokuSmallestPossibilities(_,[],_,_, Best, Best).
 findCellSudokuSmallestPossibilities(SudokuCells,[Row |SudokuCellsRest], CurrentOrder, N, CurrentBest, Best) :-
-		findCellRowSmallestPossibilities(SudokuCells, Row, CurrentOrder,
-		N, CurrentBest,Better),
-		CurrentOrderTemp is CurrentOrder + N*N,
-		findCellSudokuSmallestPossibilities(SudokuCells, SudokuCellsRest, CurrentOrderTemp, N,
-		Better, Best).
+	findCellRowSmallestPossibilities(SudokuCells, Row, CurrentOrder,
+	N, CurrentBest,Better),
+	CurrentOrderTemp is CurrentOrder + N*N,
+	findCellSudokuSmallestPossibilities(SudokuCells, SudokuCellsRest, CurrentOrderTemp, N,
+	Better, Best).
 
 %Finds an order of a zero cell in a given sudoku that has the lowest number of possible values that can be filled in that cell without violating "sudoku" rules.
 %But the number of possibilities of all zero cells has to be greater than 0,
@@ -357,36 +371,39 @@ findCellSudokuSmallestPossibilities(SudokuCells,[Row |SudokuCellsRest], CurrentO
 %so that if there is zero cell that can be filled with some value without violating "sudoku" rules it will be at least once considered as best, if
 %no other zero cell were considered best until then. If there is no zero cell, then -1 is returned.
 %findCellSmallestPossibilities(+SudokuCells, +N, -Best)
-findCellSmallestPossibilities(SudokuCells, N, Order) :- NumberOfPossibilitiesStart is  N*N + 1,
-		findCellSudokuSmallestPossibilities(SudokuCells, SudokuCells, 0, N, best(-1, NumberOfPossibilitiesStart), best(Order, _)).
+findCellSmallestPossibilities(SudokuCells, N, Order) :- 
+	NumberOfPossibilitiesStart is  N*N + 1,
+	findCellSudokuSmallestPossibilities(SudokuCells, SudokuCells, 0, N, best(-1, NumberOfPossibilitiesStart), best(Order, _)).
 
 %Fill cell with a Value in a given partial row on a positon determined by Z and then returns the modified partial row.
 %fillCellPartialRowCells(+PartialRow, +Value, +Z, -PartialRowFilled)
 fillCellPartialRowCells([_|T], Value, 0, [Value|T]).
-fillCellPartialRowCells([H|T], Value, Z, [H|PartialRowFilled]) :- 	Z > 0, ZTemp is Z - 1, 
-		fillCellPartialRowCells(T, Value, ZTemp, PartialRowFilled).
+fillCellPartialRowCells([H|T], Value, Z, [H|PartialRowFilled]) :- 
+	Z > 0, ZTemp is Z - 1, 
+	fillCellPartialRowCells(T, Value, ZTemp, PartialRowFilled).
 
 %Fill cell with a Value in a given row on a positon determined by position(Y,Z) and then returns the modified row.
 %fillCellRowPosition(+Row, +Value, +position(Y,Z), -RowFilled)							
 fillCellRowPosition([H|T], Value, position(0,Z), [PartialRowFilled|T]) :- fillCellPartialRowCells(H, Value, Z, PartialRowFilled).
 fillCellRowPosition([H|T], Value, position(Y,Z), [H|RowFilled]) :- 	Y > 0, YTemp is Y - 1, 
-		fillCellRowPosition(T,  Value, position(YTemp,Z), RowFilled).	
+	fillCellRowPosition(T,  Value, position(YTemp,Z), RowFilled).	
 
 %Fill cell with a Value in a given sudoku on a positon determined by position(X,Y,Z) and then returns the modified sudoku.
 %fillCellPosition(+Sudoku, +Value, +position(X,Y,Z), -SudokuFilled)	
 fillCellPosition([Row|SudokuCells], Value, position(0,Y,Z), [RowFilled|SudokuCells]) :-	fillCellRowPosition(Row, Value, position(Y,Z), RowFilled).
 fillCellPosition([Row|SudokuCells], Value, position(X,Y,Z), [Row|SudokuCellsCellFilled]) :- X > 0, XTemp is X - 1, 
-		fillCellPosition(SudokuCells, Value, position(XTemp,Y,Z), SudokuCellsCellFilled).
+	fillCellPosition(SudokuCells, Value, position(XTemp,Y,Z), SudokuCellsCellFilled).
 
 %If the Order is -1, then the  input is returned together with 0 that represents that no cell was modified.
 %Otherwise this procedure fills the cell determined by Order in the sudoku with some Value that doesn't violate "sudoku" rules.
 %And then returns the modified sudoku. It also returns 1 symbolising that one cell was modified.
 %fillCellOrderNonDet(+SudokuCells, +Order, -SudokuCellsModified, -Label, +N)
 fillCellOrderNonDet(SudokuCells, -1, SudokuCells, 0, _) :- !.
-fillCellOrderNonDet(SudokuCells, Order, SudokuCellsCellFilled, 1, N) :- cellOrderToCellPosition(Order, position(X,Y,Z), N),
-		possibleValues(SudokuCells, position(X,Y,Z), N, Values),
-		member(Value, Values),
-		fillCellPosition(SudokuCells, Value, position(X,Y,Z), SudokuCellsCellFilled).
+fillCellOrderNonDet(SudokuCells, Order, SudokuCellsCellFilled, 1, N) :- 
+	cellOrderToCellPosition(Order, position(X,Y,Z), N),
+	possibleValues(SudokuCells, position(X,Y,Z), N, Values),
+	member(Value, Values),
+	fillCellPosition(SudokuCells, Value, position(X,Y,Z), SudokuCellsCellFilled).
 
 %Following procedure solves sudoku represented with "divided" rows, i.e. row is represented with partial rows.
 %And after that filled sudoku is returned.(if there exist a way to fill all cells in the sudoku without violating "sudoku" rules).
@@ -396,11 +413,12 @@ fillCellOrderNonDet(SudokuCells, Order, SudokuCellsCellFilled, 1, N) :- cellOrde
 %the number of all sudoku cells, then the current sudoku is returned.
 %sudokuSolver(+SudokuCells, +N, -SudokuCellsFilled, -FilledCells) 
 sudokuSolver(SudokuCells, N, SudokuCells, FilledCellsTotal) :- FilledCellsTotal =:= N * N * N * N, !.
-sudokuSolver(SudokuCells, N, SudokuCellsFilled, FilledCellsTotal) :-	fillDeterminedCells(SudokuCells, N, SudokuCellsPartiallyFilledDet, CountFilledCellsDet),
-		findCellSmallestPossibilities(SudokuCellsPartiallyFilledDet, N, Order),   
-		fillCellOrderNonDet(SudokuCellsPartiallyFilledDet, Order, SudokuCellsPartiallyFilledNonDet,  FilledCellNonDet, N),
-		FilledCellsTotalNew is FilledCellsTotal + FilledCellNonDet + CountFilledCellsDet,
-		sudokuSolver(SudokuCellsPartiallyFilledNonDet, N, SudokuCellsFilled, FilledCellsTotalNew).
+sudokuSolver(SudokuCells, N, SudokuCellsFilled, FilledCellsTotal) :-
+	fillDeterminedCells(SudokuCells, N, SudokuCellsPartiallyFilledDet, CountFilledCellsDet),
+	findCellSmallestPossibilities(SudokuCellsPartiallyFilledDet, N, Order),   
+	fillCellOrderNonDet(SudokuCellsPartiallyFilledDet, Order, SudokuCellsPartiallyFilledNonDet,  FilledCellNonDet, N),
+	FilledCellsTotalNew is FilledCellsTotal + FilledCellNonDet + CountFilledCellsDet,
+	sudokuSolver(SudokuCellsPartiallyFilledNonDet, N, SudokuCellsFilled, FilledCellsTotalNew).
 																		
 %This procedure solves given sudoku with the help of the procedure sudokuSolver.
 %And after that sudoku with all cells filled is returned (if there exist a way to fill all cells in the sudoku without violating "sudoku" rules).
@@ -408,7 +426,7 @@ sudokuSolver(SudokuCells, N, SudokuCellsFilled, FilledCellsTotal) :-	fillDetermi
 %N is such that N*N is the length of a side of the sudoku.
 %solveDividedRowSudoku(+SudokuCells, +N, -SudokuCellsFilled)
 solveDividedRowSudoku(SudokuCells, N, SudokuCellsFilled) :- countFilledSudokuCells(SudokuCells, FilledCellsTotal),
-		sudokuSolver(SudokuCells, N, SudokuCellsFilled, FilledCellsTotal).
+	sudokuSolver(SudokuCells, N, SudokuCellsFilled, FilledCellsTotal).
 
 %This procedure solves given sudoku with the help of the procedure solveDividedRowSudoku.
 %In order to do that, sudoku is transformed in a way that it has divided rows into partial rows.
@@ -417,7 +435,7 @@ solveDividedRowSudoku(SudokuCells, N, SudokuCellsFilled) :- countFilledSudokuCel
 %N is such that N*N is the length of a side of a sudoku.
 %solveWholeRowSudoku(+SudokuCells, +N, -SudokuCellsFilled)
 solveWholeRowSudoku(SudokuCells, N, SudokuCellsFilled) :-	sudokuTransformation(SudokuCells, SudokuCellsTransformed, N),
-		solveDividedRowSudoku(SudokuCellsTransformed, N, SudokuCellsFilled).
+	solveDividedRowSudoku(SudokuCellsTransformed, N, SudokuCellsFilled).
 
 
 %On the following lines are few queries that can be used for testing purposes.
