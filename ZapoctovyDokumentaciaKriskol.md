@@ -1,6 +1,10 @@
 ﻿# Dokumentácia zápočtového programu z predmetu NPRG005 - Sudoku solver
  Odovzdaný zápočtový program pozostáva z tejto dokumentácie a súboru **ZapoctovySudokuSolverKriskol**.
- Kde druhý menovaný obsahuje kód odovzdaného programu a pár testovacích dát v podobe dotazov. 
+ Kde druhý menovaný obsahuje kód odovzdaného programu a pár testovacích dát v podobe dotazov.
+ Odovzdaný sudoku solver je (teoreticky) schopný riešiť ľubovolné sudoku, ktoré má štvorcové
+ vnútorné "štvorčeky". Teda, že počet rôznych dopĺňaných čisel do sudoku je `N*N` pre nejaké prirodzné `N`.
+ Solver má problém riešiť sudoku, ktoré má málo vyplnených hodnôt. To plynie i zo spôsobu hľadania vyplnenia
+ sudoku popísaného v ďalšom odstavci.
 ## Fungovanie sudoku solver-a:
 
 Spôsob vypĺňania zadaného sudoku je nasledovný:
