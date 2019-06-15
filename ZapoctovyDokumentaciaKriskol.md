@@ -9,8 +9,12 @@
 
 Spôsob vypĺňania zadaného sudoku je nasledovný:
 1.Ak má sudoku vyplnené všetky polia, tak ho vráť a skonči. Inak pokračuj 2.
-2.Skús vyplniť všetky také polia v sudoku, ktoré ešte nemajú vyplnenú hodnotu a existuje práve jedna hodnota, ktorú je možné do daného poľa vložiť bez porušenia pravidiel vypĺňania sudoku. Ak sa vyplní aspoň jedno pole sudoku, tak na konci 2 opakuj 2. Inak pokračuj 3.
+
+2.Skús vyplniť všetky také polia v sudoku, ktoré ešte nemajú vyplnenú hodnotu a existuje práve jedna hodnota, ktorú je možné do daného poľa vložiť bez porušenia pravidiel vypĺňania sudoku. Ak sa vyplní aspoň jedno pole sudoku, tak na konci 2 opakuj 
+2. Inak pokračuj 3.
+
 3.Nájdi také pole, ktoré je ešte nevyplnené a existuje aspoň jedna hodnota, ktorá je doplniteľná do daného poľa bez porušenia pravidiel. A ešte pre každé iné nevyplnené pole platí, že takéto pole má rovnaký alebo väčší počet možností na jeho doplnenie, tak aby sa neporušili žiadne pravidlá, ktoré plynú zo stavu sudoku. Pokračuj na krok č.4.
+
 4.Ak sa v 3. našlo nejaké pole, tak ho vyplň nejakou z možných hodnôt, 
 	inak nič nevypĺňaj. Prejdi na krok č. 1.
 
